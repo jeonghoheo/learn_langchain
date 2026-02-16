@@ -1,20 +1,27 @@
 from langchain_ollama import ChatOllama
+from langchain_core.messages import SystemMessage, HumanMessage
 
 # init Ollama model
-llm=ChatOllama(model="qwen2.5-coder",
-    temperature=0.7,     # Controls randomness/creativity (range: 0 to 1)
-    num_predict=100)     # Maximum number of tokens to generate
+llm=ChatOllama(model="qwen2.5-coder")
 
-# Set temperature to 0 for deterministic and consistent output
-llm_consistent = ChatOllama(model="qwen2.5-coder", temperature=0)
+# save conversation history
+conversation_history = [
+    SystemMessage(content="You are a helpful AI assistant."),
+]
 
-# Set temperature to 0 for deterministic, focused, and creative output
-llm_creative = ChatOllama(model="qwen2.5-coder", temperature=1)
+def chat(user_input):
+    # add user input to conversation history
+    conversation_history.append(HumanMessage(content=user_input))
+    
+    # get response from Ollama model
+    response = llm.invoke(conversation_history)
+    
+    # add model response to conversation history
+    conversation_history.append(response)
+    
+    return response.content
 
-question = "AI의 미래를 한 문장으로 예측해줘"
+# testing the chat function
+print(chat("Hello! my name is Snow"))
+print(chat("What is my name?"))
 
-print("Temperature 0:")
-print(llm_consistent.invoke(question).content)
-
-print("\nTemperature 1:")
-print(llm_creative.invoke(question).content)
