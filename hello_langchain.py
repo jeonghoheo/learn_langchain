@@ -4,7 +4,14 @@ from langchain_ollama import ChatOllama
 llm=ChatOllama(model="qwen2.5-coder")
 
 # asking a question
-response = llm.invoke("What is the capital of France?")
+questions = [
+    "What is python?",
+    "what is 1 + 1?",
+    "How do you feel today?"
+]
 
 # print the result
-print(response.content)
+for question in questions:
+    response = llm.invoke(question)
+    print(f":Q:{question}\n")
+    print(f"A:{response.content}\n")
